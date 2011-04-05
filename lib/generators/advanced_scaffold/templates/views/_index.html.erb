@@ -1,0 +1,29 @@
+<div id="<%= instances_name %>_paginate">
+  <%%= will_paginate @<%=instances_name %>, :params => { :id => params[:id] } %><BR />
+</div> 
+<%%= render :partial => 'search.html.erb' %>
+<table id="t_<%= instance_name %>_index" class="pretty">
+  <tr>
+    <%- for attribute in model_attributes -%>
+      <th><%%= sortable "<%= attribute.name %>" %></th>
+    <%- end -%>
+    <th colspan=3>Actions</th>
+  </tr>
+  <%% @<%= instances_name %>.each do |t| %>
+  <tr>
+    <%- for attribute in model_attributes -%>
+      <td><%%= t.<%= attribute.name %> %></td>
+    <%- end -%>
+    <%- if action? :show -%>
+      <td><%%= link_to "Show", <%= instance_path %>(t) %></td>
+    <%- end -%>
+    <%- if action? :edit -%>
+      <td><%%= link_to "Edit", edit_<%= instance_path %>(t) %></td>
+    <%- end -%>
+    <%- if action? :destroy -%>
+      <td><%%= link_to "Destroy", <%= instance_path %>(t), :confirm => 'Are you sure?', :method => :delete, :remote => true %></td>
+    <%- end -%>
+  </tr>
+  <%% end %>
+</table><BR />
+<%%= link_to 'New <%= instance_name %>', new_<%= instance_path %> %>

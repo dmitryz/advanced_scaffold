@@ -1,0 +1,14 @@
+<%% if params[:search].blank? %>
+<div class="field" id="search_link">
+  <%%= link_to_function "Search", "$('div#search_link').hide(); $('div#search_field').show()" %>
+</div>
+<%% else %>
+  <%% link_to "Remove filter", { :remove_filter => true }, :remote => true %>
+<%% end %>
+<div id="search_field" style="<%%= params[:search].blank? ? "display:none":"" %>">
+<%%= form_tag '', :method => :get, :remote => true do %>
+  <%%= hidden_field_tag :page, 1 %>
+  Search: <%%= text_field_tag :search, params[:search] %>
+  <%%= submit_tag "Search", :name => "do_search" %>
+<%% end %>
+</div>

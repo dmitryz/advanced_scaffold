@@ -1,0 +1,3 @@
+module AdvancedScaffold
+  # Your code goes here...
+end

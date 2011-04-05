@@ -1,0 +1,7 @@
+Description:
+    Advanced scaffold generator, creating scaffold with will_paginate, sortable columns, and search function.
+
+Example:
+    rails generate advanced_scaffold ModelName  model_attributes_array  controller_actions
+
+    This will create:
