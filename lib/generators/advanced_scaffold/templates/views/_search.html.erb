@@ -3,7 +3,7 @@
   <%%= link_to_function "Search", "$('div#search_link').hide(); $('div#search_field').show()" %>
 </div>
 <%% else %>
-  <%% link_to "Remove filter", { :remove_filter => true }, :remote => true %>
+  <%%= link_to "Remove filter", { :remove_filter => true }, :remote => true %>
 <%% end %>
 <div id="search_field" style="<%%= params[:search].blank? ? "display:none":"" %>">
 <%%= form_tag '', :method => :get, :remote => true do %>

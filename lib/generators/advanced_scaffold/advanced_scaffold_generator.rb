@@ -1,10 +1,11 @@
 require 'rails/generators/migration'
 require 'rails/generators/generated_attribute'
 
-module AdvancedScaffold
+module AdvancedScaffoldGenerator
   module Generators
     class AdvancedScaffoldGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
+      namespace "advanced_scaffold"
       attr_accessor :scaffold_name, :model_attributes, :controller_actions
 
       source_root File.expand_path('../templates', __FILE__)
@@ -44,6 +45,20 @@ module AdvancedScaffold
         @skip_model = true if @model_attributes.empty?
       end
 
+      def copy_js
+        copy_file("advanced_scaffold.js", "public/javascripts/advanced_scaffold.js")
+      end
+      def copy_css
+        copy_file("css/advanced_scaffold.css", "public/stylesheets/advanced_scaffold.css")
+      end
+      def copy_images
+        copy_file("images/down_arrow.gif", "public/images/advanced_scaffold/down_arrow.gif")
+        copy_file("images/up_arrow.gif", "public/images/advanced_scaffold/up_arrow.gif")
+      end
+#      def add_config
+#        inject_into_file "config/application.rb", :after => "config.action_view.javascript_expansions" do
+#          "config.action_view.javascript_expansions[:defaults] << %w(advanced_scaffold)"
+#        end
       def create_model
         template 'model.rb',  "app/models/#{model_path}.rb" unless @skip_model
       end

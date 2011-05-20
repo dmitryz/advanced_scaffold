@@ -21,8 +21,8 @@ module KeepParamsInSession
       else
         sess_id=sess_id_local
       end
-      params[key] = session["#{sess_id}#{key}"] and logger.debug("restore #{key}=#{params[key]}") if (params[key].nil? && !session["#{sess_id}#{key}"].nil?)
-      session["#{sess_id}#{key}"] = params[key] and logger.debug("store #{sess_id}#{key} = #{params[key]}") unless params[key].nil?
+      params[key] = session["#{sess_id}#{key}"]  if (params[key].nil? && !session["#{sess_id}#{key}"].nil?)
+      session["#{sess_id}#{key}"] = params[key] unless params[key].nil?
     end
   end
 end

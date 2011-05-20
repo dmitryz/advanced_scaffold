@@ -1,5 +1,5 @@
 class <%= plural_class_name %>Controller < ApplicationController
-  require 'keep_params_in_session/keep_params_in_session'
+  require 'advanced_scaffold/keep_params_in_session/keep_params_in_session'
   include KeepParamsInSession
   helper_method :sort_column, :sort_direction
   <%= controller_methods :actions %>

@@ -12,7 +12,7 @@ class <%= class_name %> < ActiveRecord::Base
   end
   def self.search(search)
     if search.present?
-      where('<%= model_attributes.map { |a| "#{a.name} LIKE :search" if %w[string text].include?(a.type.to_s) }.compact.join(" or ") %>', :search => search)
+      where('<%= model_attributes.map { |a| "#{a.name} RLIKE :search" if %w[string text].include?(a.type.to_s) }.compact.join(" or ") %>', :search => search)
     else
       scoped
     end
