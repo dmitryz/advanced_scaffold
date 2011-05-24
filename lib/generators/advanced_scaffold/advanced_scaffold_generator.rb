@@ -17,6 +17,8 @@ module AdvancedScaffoldGenerator
       class_option  :skip_model,  :desc =>  'Don\'t generate a model or migration file.', :type => :boolean
       class_option  :skip_migration,  :desc => 'Don\'t generate migration file for model.', :type => :boolean
       class_option  :skip_controller, :desc => 'Don\'t generate controller, helper, or views', :type => :boolean
+      class_option  :controller_name,  :desc =>  'Set controller name', :type => :string
+      class_option  :master_name,  :desc =>  'Set controller name < inheritance', :type => :string
 
       def initialize(*args, &block)
         super
@@ -71,25 +73,25 @@ module AdvancedScaffoldGenerator
 
       def create_controller
         unless options.skip_controller?
-          template  'controller.rb',  "app/controllers/#{plural_name}_controller.rb"
-          template  'helper.rb',  "app/helpers/#{plural_name}_helper.rb"
+          template  'controller.rb',  "app/controllers/#{plural_controller_name}_controller.rb"
+          template  'helper.rb',  "app/helpers/#{plural_controller_name}_helper.rb"
           controller_actions.each do |action|
             if %w[index show new edit].include?(action)
-              template "views/#{action}.html.erb",  "app/views/#{plural_name}/#{action}.html.erb"
+              template "views/#{action}.html.erb",  "app/views/#{plural_controller_name}/#{action}.html.erb"
             end
           end
 
           if form_partial?
-            template  "views/_form.html.erb", "app/views/#{plural_name}/_form.html.erb"
+            template  "views/_form.html.erb", "app/views/#{plural_controller_name}/_form.html.erb"
           end
           if index_partial?
-            template  "views/_index.html.erb", "app/views/#{plural_name}/_index.html.erb"
-            template  "views/_search.html.erb", "app/views/#{plural_name}/_search.html.erb"
+            template  "views/_index.html.erb", "app/views/#{plural_controller_name}/_index.html.erb"
+            template  "views/_search.html.erb", "app/views/#{plural_controller_name}/_search.html.erb"
           end
           if index_js?
-            template  "views/index.js.erb", "app/views/#{plural_name}/index.js.erb"
+            template  "views/index.js.erb", "app/views/#{plural_controller_name}/index.js.erb"
           end
-          namespaces = plural_name.split('/')
+          namespaces = plural_controller_name.split('/')
           resource = namespaces.pop
           route namespaces.reverse.inject("resources :#{resource}") { |acc, namespace|
             "namespace(:#{namespace}){ #{acc} }"
@@ -127,6 +129,15 @@ module AdvancedScaffoldGenerator
       def plural_class_name
         plural_name.camelize
       end
+      
+      def camelize_master_name
+        master_name.camelize
+      end
+
+
+      def plural_controller_name
+        controller_name.camelize
+      end
 
       def model_path
         class_name.underscore
@@ -140,10 +151,35 @@ module AdvancedScaffoldGenerator
         advanced_scaffold_name.underscore.pluralize
       end
 
+      def controller_name
+        options.controller_name.present? ? options.controller_name.underscore : singular_name
+      end
+
+      def camelize_controller_name
+        controller_name.camelize
+      end
+      
+      def plural_controller_name
+        controller_name.underscore.pluralize
+      end
+
+      def plural_camelize_controller_name
+        plural_controller_name.camelize
+      end
+
+
+      def master_name
+        options.master_name.present? ? options.master_name.underscore : 'application'
+      end
+
       def singular_name
         advanced_scaffold_name.underscore
       end
       
+      def singular_controller_name
+        controller_name.underscore
+      end
+
       def table_name
         plural_name.split('/').last
       end
@@ -151,6 +187,20 @@ module AdvancedScaffoldGenerator
       def instance_name
         singular_name.split('/').last
       end
+      
+      def controller_instance_name
+        controller_name.split('/').last
+      end
+
+
+      def namespace_controller
+        controller_name.include?('/') ? controller_name.split('/').first : ""
+      end
+      
+      def namespace_part_controller
+        controller_name.include?('/') ? controller_name.split('/').first+"_" : ""
+      end
+
 
       def namespace
         singular_name.include?('/') ? singular_name.split('/').first : ""
@@ -170,11 +220,31 @@ module AdvancedScaffoldGenerator
       def instance_path
         namespace_part + instance_name + "_path"
       end
+      
+      def controller_instance_path
+        namespace_part_controller + controller_instance_name + "_path"
+      end
+      
+      def controller_instances_path
+        namespace_part_controller + controller_instances_name + "_path"
+      end
+      def controller_instances_url
+        namespace_part_controller + controller_instances_name + "_url"
+      end
+
+
+
 
 
       def instances_name
         instance_name.pluralize
       end
+      
+      def controller_instances_name
+        controller_instance_name.pluralize
+      end
+
+
 
       def print_usage
         self.class.help(Thor::Base.shell.new)
